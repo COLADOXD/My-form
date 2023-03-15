@@ -45,9 +45,14 @@ const backComponents = () => {
   }
 }
 
-const changeInfo = (info: string) => {
-  dataInfo.name = info
-  console.log(`dataInfo: ${dataInfo.name}`)
+const changeName = (name: string) => {
+  dataInfo.name = name
+}
+const changeEmail = (email: string) => {
+  dataInfo.email = email
+}
+const changePhoneNumber = (number: string) => {
+  dataInfo.phoneNumber = number
 }
 
 </script>
@@ -65,7 +70,8 @@ const changeInfo = (info: string) => {
     </div>
     <div class="relative bottom-10 flex justify-center px-4">
       <PersonalInfo v-show="state.viewPersonalInfo" :name="dataInfo.name" :email="dataInfo.email"
-        :phoneNumber="dataInfo.phoneNumber" @todo-info="changeInfo" />
+        :phoneNumber="dataInfo.phoneNumber" @todo-name="changeName" @todo-email="changeEmail"
+        @todo-phone-number="changePhoneNumber" />
       <SelectPlan v-show="state.viewSelectPlan" />
       <PickAdd v-show="state.viewPickAdd" />
       <FinishUp v-show="state.viewFinishUp" />

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue';
+import { defineProps, reactive } from 'vue';
 
 const props = defineProps({
     name: {
@@ -16,12 +16,23 @@ const props = defineProps({
     },
 })
 
+const PersonalInfo = reactive({
+    name: props.name,
+    email: props.email,
+    phoneNumber: props.phoneNumber
+})
+
 
 
 const emit = defineEmits(['todoName', 'todoEmail', 'todoPhoneNumber'])
 const putName = () => {
-    emit('todoName', props.name)
-    console.log(props.name)
+    emit('todoName', PersonalInfo.name)
+}
+const putEmail = () => {
+    emit('todoEmail', PersonalInfo.email)
+}
+const putPhoneNumber = () => {
+    emit('todoPhoneNumber', PersonalInfo.phoneNumber)
 }
 </script>
 
@@ -31,17 +42,17 @@ const putName = () => {
         <div class=" text-slate-300 text-md">Please provide your name, email address, and phone number.</div>
         <div class="my-4">
             <div>Name</div>
-            <input v-model="props.name" @blur="putName" type="text" class="w-full h-10 p-2 border-2"
+            <input v-model="PersonalInfo.name" @blur="putName" type="text" class="w-full h-10 p-2 border-2"
                 placeholder="e.g. Stephen King">
         </div>
         <div class="my-4">
             <div>Email Address</div>
-            <input v-model="props.email" type="email" class="w-full h-10 p-2 border-2"
+            <input v-model="PersonalInfo.email" @blur="putEmail" type="email" class="w-full h-10 p-2 border-2"
                 placeholder="e.g. StephenKing@lorem.com">
         </div>
         <div class="my-4">
             <div>Phone Number</div>
-            <input v-model="props.phoneNumber" type="number" class="w-full h-10 p-2 border-2"
+            <input v-model="PersonalInfo.phoneNumber" @blur="putPhoneNumber" type="number" class="w-full h-10 p-2 border-2"
                 placeholder="e.g. +1 234 567 890">
         </div>
     </div>
