@@ -1,8 +1,37 @@
+<script setup lang="ts">
+import { reactive, defineProps, defineEmits } from 'vue';
+
+const props = defineProps({
+    active: {
+        type: Boolean,
+        required: true
+    }
+})
+
+const select = reactive({
+    next: props.active,
+    onArcade: false,
+    onAdvanced: false,
+    onPro: false,
+    onYear: false
+})
+
+const emit = defineEmits(['togglePlan'])
+
+const onActivePlan = (plan: string) => {
+    [select.onArcade, select.onAdvanced, select.onPro] = [false, false, false]
+    emit('togglePlan', plan)
+    if (plan === 'arcade') {
+        select.onArcade = true
+    } else if (plan === 'advanced') { select.onAdvanced = true } else { select.onPro = true }
+}
+</script>
 <template>
     <div class="bg-white px-4 py-6 rounded-lg">
         <div class=" text-2xl font-bold text-cyan-700">Select your plan</div>
         <div class=" text-slate-300 text-md">You have the option of monthly or yearly billing.</div>
-        <div class="my-4 p-3 flex flex-row border-2 rounded-lg border-slate-300">
+        <div @click="onActivePlan('arcade')" class="my-4 p-3 flex flex-row border-2 rounded-lg border-slate-300"
+            :class="{ 'bg-blue-100 border-slate-500': select.onArcade }">
             <div class="rounded-full bg-orange-400 h-10 w-10 flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-6 h-6">
@@ -13,10 +42,12 @@
             </div>
             <div class="ml-4">
                 <div class="font-bold">Arcade</div>
-                <div class=" font-light text-sm">$9/mo</div>
+                <div v-if="!select.onYear" class=" font-light text-sm">$9/mo</div>
+                <div v-else class=" font-light text-sm">$108/year</div>
             </div>
         </div>
-        <div class="my-4 p-3 flex flex-row border-2 rounded-lg border-slate-300">
+        <div @click="onActivePlan('advanced')" class="my-4 p-3 flex flex-row border-2 rounded-lg border-slate-300"
+            :class="{ 'bg-blue-100 border-slate-500': select.onAdvanced }">
             <div class="rounded-full bg-red-300 h-10 w-10 flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-6 h-6">
@@ -27,10 +58,12 @@
             </div>
             <div class="ml-4">
                 <div class="font-bold">Advanced</div>
-                <div class=" font-light text-sm">$12/mo</div>
+                <div v-if="!select.onYear" class=" font-light text-sm">$12/mo</div>
+                <div v-else class=" font-light text-sm">$144/year</div>
             </div>
         </div>
-        <div class="my-4 p-3 flex flex-row border-2 rounded-lg border-slate-300">
+        <div @click="onActivePlan('pro')" class="my-4 p-3 flex flex-row border-2 rounded-lg border-slate-300"
+            :class="{ 'bg-blue-100 border-slate-500': select.onPro }">
             <div class="rounded-full bg-blue-500 h-10 w-10 flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-6 h-6">
@@ -41,12 +74,13 @@
             </div>
             <div class="ml-4">
                 <div class="font-bold">Pro</div>
-                <div class=" font-light text-sm">$15/mo</div>
+                <div v-if="!select.onYear" class=" font-light text-sm">$15/mo</div>
+                <div v-else class=" font-light text-sm">$180/year</div>
             </div>
         </div>
         <div class="flex flex-row justify-center bg-slate-100 py-4">
             <label class="inline-block pl-[0.15rem] hover:cursor-pointer" for="flexSwitchCheckDefault">Monthly</label>
-            <input
+            <input v-model="select.onYear"
                 class="mt-[0.3rem] mx-6 h-3.5 w-8 appearance-none rounded-[0.4375rem] bg-neutral-300 dark:bg-neutral-600 before:pointer-events-none before:absolute before:h-3.5 before:w-3.5 before:rounded-full before:bg-transparent before:content-[''] after:absolute after:z-[2] after:-mt-[0.1875rem] after:h-5 after:w-5 after:rounded-full after:border-none after:bg-neutral-100 dark:after:bg-neutral-400 after:shadow-[0_0px_3px_0_rgb(0_0_0_/_7%),_0_2px_2px_0_rgb(0_0_0_/_4%)] after:transition-[background-color_0.2s,transform_0.2s] after:content-[''] checked:bg-primary dark:checked:bg-primary checked:after:absolute checked:after:z-[2] checked:after:-mt-[3px] checked:after:ml-[1.0625rem] checked:after:h-5 checked:after:w-5 checked:after:rounded-full checked:after:border-none checked:after:bg-primary dark:checked:after:bg-primary checked:after:shadow-[0_3px_1px_-2px_rgba(0,0,0,0.2),_0_2px_2px_0_rgba(0,0,0,0.14),_0_1px_5px_0_rgba(0,0,0,0.12)] checked:after:transition-[background-color_0.2s,transform_0.2s] checked:after:content-[''] hover:cursor-pointer focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[3px_-1px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-5 focus:after:w-5 focus:after:rounded-full focus:after:content-[''] checked:focus:border-primary checked:focus:bg-primary checked:focus:before:ml-[1.0625rem] checked:focus:before:scale-100 checked:focus:before:shadow-[3px_-1px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s]"
                 type="checkbox" role="switch" id="flexSwitchCheckDefault" />
             <label class="inline-block pl-[0.15rem] hover:cursor-pointer" for="flexSwitchCheckDefault">Yearly</label>

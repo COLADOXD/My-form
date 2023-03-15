@@ -3,9 +3,9 @@ import PersonalInfo from '../components/PersonalInfo.vue';
 import SelectPlan from '../components/SelectPlan.vue';
 import PickAdd from '../components/PickAdd.vue';
 import FinishUp from '../components/FinishUp.vue';
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 
-const state = reactive({
+const viewBox = reactive({
   viewPersonalInfo: true,
   viewSelectPlan: false,
   viewPickAdd: false,
@@ -16,43 +16,51 @@ const dataInfo = reactive({
   name: '',
   email: '',
   phoneNumber: '',
-
+  planMain: ''
 })
 
+const active = ref(true)
+
 const nextComponents = () => {
-  if (state.viewPersonalInfo) {
-    state.viewPersonalInfo = !state.viewPersonalInfo
-    state.viewSelectPlan = !state.viewSelectPlan
-  } else if (state.viewSelectPlan) {
-    state.viewSelectPlan = !state.viewSelectPlan
-    state.viewPickAdd = !state.viewPickAdd
-  } else if (state.viewPickAdd) {
-    state.viewPickAdd = !state.viewPickAdd
-    state.viewFinishUp = !state.viewFinishUp
+  if (viewBox.viewPersonalInfo) {
+    viewBox.viewPersonalInfo = !viewBox.viewPersonalInfo
+    viewBox.viewSelectPlan = !viewBox.viewSelectPlan
+    active.value = !active.value
+  } else if (viewBox.viewSelectPlan) {
+    viewBox.viewSelectPlan = !viewBox.viewSelectPlan
+    viewBox.viewPickAdd = !viewBox.viewPickAdd
+  } else if (viewBox.viewPickAdd) {
+    viewBox.viewPickAdd = !viewBox.viewPickAdd
+    viewBox.viewFinishUp = !viewBox.viewFinishUp
   }
 }
 
 const backComponents = () => {
-  if (state.viewFinishUp) {
-    state.viewFinishUp = !state.viewFinishUp
-    state.viewPickAdd = !state.viewPickAdd
-  } else if (state.viewSelectPlan) {
-    state.viewSelectPlan = !state.viewSelectPlan
-    state.viewPersonalInfo = !state.viewPersonalInfo
-  } else if (state.viewPickAdd) {
-    state.viewPickAdd = !state.viewPickAdd
-    state.viewSelectPlan = !state.viewSelectPlan
+  if (viewBox.viewFinishUp) {
+    viewBox.viewFinishUp = !viewBox.viewFinishUp
+    viewBox.viewPickAdd = !viewBox.viewPickAdd
+  } else if (viewBox.viewSelectPlan) {
+    viewBox.viewSelectPlan = !viewBox.viewSelectPlan
+    viewBox.viewPersonalInfo = !viewBox.viewPersonalInfo
+  } else if (viewBox.viewPickAdd) {
+    viewBox.viewPickAdd = !viewBox.viewPickAdd
+    viewBox.viewSelectPlan = !viewBox.viewSelectPlan
   }
 }
 
-const changeName = (name: string) => {
+const haddleName = (name: string) => {
   dataInfo.name = name
 }
-const changeEmail = (email: string) => {
+const haddleEmail = (email: string) => {
   dataInfo.email = email
 }
-const changePhoneNumber = (number: string) => {
+const haddlePhoneNumber = (number: string) => {
   dataInfo.phoneNumber = number
+}
+
+const haddleplan = (plan: string) => {
+  active.value = true
+  dataInfo.planMain = plan
 }
 
 </script>
@@ -60,26 +68,27 @@ const changePhoneNumber = (number: string) => {
   <div class="h-screen">
     <div class="flex flex-row justify-center bg-red-300 h-[150px]">
       <div class=" h-[40px] w-[40px] my-6 mx-2 rounded-full border border-black flex items-center justify-center "
-        :class="{ 'bg-slate-500': state.viewPersonalInfo }">1</div>
+        :class="{ 'bg-slate-500': viewBox.viewPersonalInfo }">1</div>
       <div class=" h-[40px] w-[40px] my-6 mx-2 rounded-full border border-black flex items-center justify-center "
-        :class="{ 'bg-slate-500': state.viewSelectPlan }">2</div>
+        :class="{ 'bg-slate-500': viewBox.viewSelectPlan }">2</div>
       <div class=" h-[40px] w-[40px] my-6 mx-2 rounded-full border border-black flex items-center justify-center "
-        :class="{ 'bg-slate-500': state.viewPickAdd }">3</div>
+        :class="{ 'bg-slate-500': viewBox.viewPickAdd }">3</div>
       <div class=" h-[40px] w-[40px] my-6 mx-2 rounded-full border border-black flex items-center justify-center "
-        :class="{ 'bg-slate-500': state.viewFinishUp }">4</div>
+        :class="{ 'bg-slate-500': viewBox.viewFinishUp }">4</div>
     </div>
     <div class="relative bottom-10 flex justify-center px-4">
-      <PersonalInfo v-show="state.viewPersonalInfo" :name="dataInfo.name" :email="dataInfo.email"
-        :phoneNumber="dataInfo.phoneNumber" @todo-name="changeName" @todo-email="changeEmail"
-        @todo-phone-number="changePhoneNumber" />
-      <SelectPlan v-show="state.viewSelectPlan" />
-      <PickAdd v-show="state.viewPickAdd" />
-      <FinishUp v-show="state.viewFinishUp" />
+      <PersonalInfo v-show="viewBox.viewPersonalInfo" :name="dataInfo.name" :email="dataInfo.email"
+        :phoneNumber="dataInfo.phoneNumber" @todo-name="haddleName" @todo-email="haddleEmail"
+        @todo-phone-number="haddlePhoneNumber" />
+      <SelectPlan :active="active" v-show="viewBox.viewSelectPlan" @toggle-plan="haddleplan" />
+      <PickAdd v-show="viewBox.viewPickAdd" />
+      <FinishUp v-show="viewBox.viewFinishUp" />
     </div>
     <div class="flex flex-row justify-between bg-white py-6 px-4">
-      <button class=" text-gray-400" v-if="!state.viewPersonalInfo" @click="backComponents">Go
+      <button class=" text-gray-400" v-if="!viewBox.viewPersonalInfo" @click="backComponents">Go
         back</button>
-      <button class=" bg-blue-900 text-white p-3 rounded-md" v-if="!state.viewFinishUp" @click="nextComponents">Next
+      <button :disabled="!active" class=" bg-blue-900 text-white p-3 rounded-md" v-if="!viewBox.viewFinishUp"
+        @click="nextComponents">Next
         Step</button>
       <button class="bg-blue-500 text-white p-3 rounded-md" v-else>Confirm</button>
     </div>
