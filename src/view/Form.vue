@@ -25,7 +25,8 @@ const nextComponents = () => {
   if (viewBox.viewPersonalInfo) {
     viewBox.viewPersonalInfo = !viewBox.viewPersonalInfo
     viewBox.viewSelectPlan = !viewBox.viewSelectPlan
-    active.value = !active.value
+    if (dataInfo.planMain.length <= 0) { active.value = false }
+
   } else if (viewBox.viewSelectPlan) {
     viewBox.viewSelectPlan = !viewBox.viewSelectPlan
     viewBox.viewPickAdd = !viewBox.viewPickAdd
