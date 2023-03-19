@@ -6,30 +6,34 @@ import FinishUp from "../components/FinishUp.vue";
 import { reactive, ref } from "vue";
 
 const viewBox = reactive({
-  viewPersonalInfo: false,
+  viewPersonalInfo: true,
   viewSelectPlan: false,
   viewPickAdd: false,
-  viewFinishUp: true,
+  viewFinishUp: false,
 });
 
 const dataInfo = reactive({
   name: "",
   email: "",
   phoneNumber: "",
-  planMain: "",
-  planAdd: [{ plan: "Online service", price: 20 }] as {
+  planMain: {
+    plan: "",
+    price: 0,
+  },
+  planAdd: [{}] as {
     plan: string;
     price: number;
   }[],
 });
 
 const active = ref(false);
+dataInfo.planAdd.shift();
 
 const nextComponents = () => {
   if (viewBox.viewPersonalInfo) {
     viewBox.viewPersonalInfo = !viewBox.viewPersonalInfo;
     viewBox.viewSelectPlan = !viewBox.viewSelectPlan;
-    if (dataInfo.planMain.length <= 0) {
+    if (Object.keys(dataInfo.planMain).length <= 0) {
       active.value = false;
     }
   } else if (viewBox.viewSelectPlan) {
@@ -77,9 +81,12 @@ const onActive = () => {
   }
 };
 
-const haddleplan = (plan: string) => {
+const haddleplan = (plan: string, price: number) => {
   active.value = true;
-  dataInfo.planMain = plan;
+  dataInfo.planMain.plan = plan;
+  dataInfo.planMain.price = price;
+  console.log(`dataInfo.planMain ${dataInfo.planMain.plan}`);
+  console.log(`dataInfo.planMain ${dataInfo.planMain.price}`);
 };
 
 const haddleAddPlan = (plan: string, price: number) => {
@@ -90,7 +97,6 @@ const haddleAddPlan = (plan: string, price: number) => {
     dataInfo.planAdd = dataInfo.planAdd.filter(
       (deletedPlan) => deletedPlan.plan !== plan
     );
-    console.log(dataInfo.planAdd);
   }
 };
 </script>
@@ -142,7 +148,11 @@ const haddleAddPlan = (plan: string, price: number) => {
         :planAdd="dataInfo.planAdd"
         @todo-plan="haddleAddPlan"
       />
-      <FinishUp v-show="viewBox.viewFinishUp" />
+      <FinishUp
+        v-show="viewBox.viewFinishUp"
+        :planAdd="dataInfo.planAdd"
+        :planMain="dataInfo.planMain"
+      />
     </div>
     <div class="flex flex-row justify-between bg-white py-6 px-4">
       <button

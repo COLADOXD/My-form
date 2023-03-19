@@ -20,9 +20,9 @@ const select = reactive({
 
 const emit = defineEmits(["togglePlan"]);
 
-const onActivePlan = (plan: string) => {
+const onActivePlan = (plan: string, price: number) => {
   [select.onArcade, select.onAdvanced, select.onPro] = [false, false, false];
-  emit("togglePlan", plan);
+  emit("togglePlan", plan, price);
   if (plan === "arcade") {
     select.onArcade = true;
   } else if (plan === "advanced") {
@@ -39,7 +39,7 @@ const onActivePlan = (plan: string) => {
       You have the option of monthly or yearly billing.
     </div>
     <div
-      @click="onActivePlan('arcade')"
+      @click="onActivePlan('arcade', 9)"
       class="my-4 p-3 flex flex-row border-2 rounded-lg border-slate-300"
       :class="{ 'bg-blue-100 border-slate-500': select.onArcade }"
     >
@@ -73,7 +73,7 @@ const onActivePlan = (plan: string) => {
       </div>
     </div>
     <div
-      @click="onActivePlan('advanced')"
+      @click="onActivePlan('advanced', 12)"
       class="my-4 p-3 flex flex-row border-2 rounded-lg border-slate-300"
       :class="{ 'bg-blue-100 border-slate-500': select.onAdvanced }"
     >
@@ -102,7 +102,7 @@ const onActivePlan = (plan: string) => {
       </div>
     </div>
     <div
-      @click="onActivePlan('pro')"
+      @click="onActivePlan('pro', 15)"
       class="my-4 p-3 flex flex-row border-2 rounded-lg border-slate-300"
       :class="{ 'bg-blue-100 border-slate-500': select.onPro }"
     >

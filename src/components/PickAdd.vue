@@ -1,12 +1,5 @@
 <script setup lang="ts">
-import {
-  reactive,
-  defineEmits,
-  defineProps,
-  PropType,
-  onMounted,
-  computed,
-} from "vue";
+import { reactive, defineEmits, defineProps, PropType } from "vue";
 
 interface PlanAdd {
   plan: string;
